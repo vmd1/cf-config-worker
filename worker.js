@@ -4,14 +4,14 @@ export default {
     const path = url.pathname;
 
     // /v1/time
-    if (path === "/v1/time") {
+    if (path === "/v1/config/time") {
       return Response.json({
         time: new Date().toISOString(),
       });
     }
 
     // /v1/date
-    if (path === "/v1/date") {
+    if (path === "/v1/config/date") {
       return Response.json({
         date: new Date().toISOString().split("T")[0],
       });
