@@ -1,0 +1,11 @@
+{
+  "name": "config-api",
+  "main": "worker.js",
+  "compatibility_date": "2026-06-04",
+  "kv_namespaces": [
+    {
+      "binding": "CONFIG_KV",
+      "id": "c4a5fb9cef544bd8b32021def70ed79a"
+    }
+  ]
+}
