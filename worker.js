@@ -1,45 +1,45 @@
 export default {
   async fetch(request, env) {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        headers: corsHeaders,
+      });
+    }
+
     const url = new URL(request.url);
-    const path = url.pathname;
 
-    // /v1/time
-    if (path === "/v1/config/time") {
-      return Response.json({
-        time: new Date().toISOString(),
-      });
-    }
+    if (url.pathname.startsWith("/v1/config/")) {
+      const key = url.pathname.split("/").pop();
 
-    // /v1/date
-    if (path === "/v1/config/date") {
-      return Response.json({
-        date: new Date().toISOString().split("T")[0],
-      });
-    }
+      const config = await env.CONFIG_KV.get(key, "json");
 
-    // /v1/config/<key>
-    if (path.startsWith("/v1/config/")) {
-      const key = path.replace("/v1/config/", "");
-
-      const value = await env.CONFIG_KV.get(key);
-
-      if (!value) {
+      if (!config) {
         return Response.json(
-          { error: "Config not found" },
-          { status: 404 }
+          { error: "Not found" },
+          {
+            status: 404,
+            headers: corsHeaders,
+          }
         );
       }
 
-      try {
-        return Response.json(JSON.parse(value));
-      } catch {
-        return Response.json({ value });
-      }
+      return Response.json(config, {
+        headers: corsHeaders,
+      });
     }
 
     return Response.json(
       { error: "Not found" },
-      { status: 404 }
+      {
+        status: 404,
+        headers: corsHeaders,
+      }
     );
   },
 };
